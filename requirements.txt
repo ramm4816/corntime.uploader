@@ -1,0 +1,6 @@
+requests
+pyrogram
+tgcrypto
+ffmpeg
+wget
+"python-socketio[client]"

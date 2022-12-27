@@ -1,8 +1,5 @@
 class MasterApi:
 
-    @staticmethood
+    @staticmethod
     def get_task():
-
-
-
-    
+        pass
