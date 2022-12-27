@@ -1,7 +1,6 @@
 import ffmpeg, subprocess
 import time
 
-
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -15,13 +14,15 @@ class bcolors:
 
 class VideoCombiner:
 
+    @staticmethod
     def get_metadata(filename):
         metadata = ffmpeg.probe(filename)["streams"]
         for _metadata in metadata:
             if _metadata['tags']['handler_name']=="VideoHandler":
                 return _metadata
 
-    def combine_videos(self, intro, video):
+    @staticmethod
+    def combine_videos(intro, video):
                 
         time_start = time.time()
 
@@ -30,7 +31,7 @@ class VideoCombiner:
         INTRO = intro
         INTRO_OUT = "intro_resized.mp4"
 
-        meta = get_metadata(VIDEO)
+        meta = VideoCombiner.get_metadata(VIDEO)
 
         tbn = meta['time_base'].split('/')[1]
         ratio = f"{meta['coded_width']}:{meta['coded_height']}"
@@ -39,8 +40,8 @@ class VideoCombiner:
 
         subprocess.run(f'ffmpeg -y -i {INTRO} -vf scale={ratio}:force_original_aspect_ratio=decrease,pad={ratio}:-1:-1:color=black -vsync 2 -video_track_timescale {tbn} {INTRO_OUT}'.split(' '))
 
-        m1 = get_metadata(VIDEO)
-        m2 = get_metadata(INTRO_OUT)
+        m1 = VideoCombiner.get_metadata(VIDEO)
+        m2 = VideoCombiner.get_metadata(INTRO_OUT)
 
         subprocess.run("clear")
 
@@ -68,6 +69,9 @@ class VideoCombiner:
         subprocess.run(command)
 
         print(bcolors.OKBLUE + "CONCAT VIDEOS" + bcolors.ENDC)
+
+        print('test')
+
 
         input_filepath = f"input.txt"
 
