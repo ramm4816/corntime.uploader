@@ -3,18 +3,25 @@
 
 **Install guide:**
 ```
-sudo apt install ffmpeg
-pip3 install -r requirements.txt
-pip3 install "python-socketio[client]"
+python3 install.py
 ```
 
 
-**Create service:**
-
+Start uploader:
 ```
-sudo nano /etc/systemd/system/uploader.service
+sudo service uploader.service start
 ```
 
-Paste code:
+
+Status uploader:
+```
+sudo service uploader.service status
+```
+
+
+Stop uploader:
+```
+sudo service uploader.service stop
+```
 
 
