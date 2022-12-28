@@ -1,6 +1,5 @@
 requests
 pyrogram
 tgcrypto
-ffmpeg
+ffmpeg-python
 wget
-"python-socketio[client]"

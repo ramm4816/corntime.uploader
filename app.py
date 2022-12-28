@@ -1,41 +1,13 @@
-import os, asyncio, pymongo, traceback, sys, random
-from multiprocessing import Process, Pool, Queue, Manager
-import time, random, sys, os
-from dotenv import load_dotenv
-from time import time, sleep
-import uuid, requests
-import ffmpeg
-from pprint import pprint
-import subprocess
-from random import choice
-load_dotenv()
-import urllib.request
-from pyrogram import Client, filters
-from pget.down import Downloader
-import socketio
-import time
-import glob
-import moviepy
-import moviepy.editor as mp
-from os.path import exists
+import os, traceback, time, os, requests, socketio, time, glob, config, random
+from multiprocessing import Process
+from pyrogram import Client
 from utils import TerminalColors
+from master_api import MasterApi
+from multiprocessing import freeze_support
 
-
-ROOT_PATH = '/home/dev/uploader'
-
-
-
-INTROS = [
-    {'file':'/home/dev/uploader/intros/m1.mp4',  'name':'m1'},
-    {'file':'/home/dev/uploader/intros/m2.mp4',  'name':'m2'},
-    {'file':'/home/dev/uploader/intros/m3.mp4',  'name':'m3'},
-    {'file':'/home/dev/uploader/intros/f1.mp4',  'name':'f1'},
-    {'file':'/home/dev/uploader/intros/f2.mp4',  'name':'f2'},
-    {'file':'/home/dev/uploader/intros/f3.mp4',  'name':'f3'},
-    {'file':'/home/dev/uploader/intros/f21.mp4',  'name':'f21'},
-    {'file':'/home/dev/uploader/intros/f22.mp4',  'name':'f22'},
-    {'file':'/home/dev/uploader/intros/f23.mp4',  'name':'f23'},
-]
+from video_downloader import VideoDownloader
+from video_combiner import VideoCombiner
+from video_uploader import VideoUploader
 
 class Worker:
 
@@ -47,67 +19,58 @@ class Worker:
 
     def run(self, session_num):
 
-        self.pycl = Client(f"s{session_num}", self.api_id, self.api_hash)
-        self.sio = socketio.Client()
-        self.myhost = os.uname()[1]
+        self.client_pyrogram = Client(f"s{session_num}", self.api_id, self.api_hash)
+        self.client_socket_io = socketio.Client()
+        self.my_host_name = os.uname()[1]
 
-        self.sio.connect('https://fykp.ru/socket.io')
+        self.client_socket_io.connect('https://fykp.ru/socket.io')
 
-        print(TerminalColors.OKBLUE + f'Connected to socket io, my session_id: {self.sio.sid}' + TerminalColors.ENDC)
+        print(TerminalColors.OKGREEN + f'Connected to socket io, my session_id: {self.client_socket_io.sid}\n' + TerminalColors.ENDC)
 
         while True:
+
             try:
                 
-                print(res)
-                self.chat_ids = res['chat_ids']
+                task = MasterApi.get_task()
+                self.chat_ids = task['chat_ids']
 
-            
-                '''
-                self.pycl.start()
-                for link in res['links']:
-                    self.pycl.join_chat(link)
-                    sleep(60)
-                '''
+                #self.client_pyrogram.start()
+                #for link in res['links']:
+                #    self.client_pyrogram.join_chat(link)
+                #    sleep(60)
+
+                task = task['task']
+
+                self.client_socket_io.emit('update', {'type': 'show_task', 'task_id': task['_id'], 'host': self.my_host_name})
 
 
-                self.task = res['task']
+                downloader = VideoDownloader(task['url'], self.client_socket_io, task)
+                downloaded_file_path = downloader.download()
 
-                self.sio.emit('update', {
-                    'type': 'add_task',
-                    'task_id': self.task['_id'],
-                    'host': self.myhost
-                })
-
-                print(f'download: {self.task["url"]}')
-                
-                data = self.download_file(self.task['url'])
-
-                if data == False:
+                if downloaded_file_path == False:
+                    # SEND INFO TO SERVER WITH ERROR !
                     continue
 
-                res = self.upload_file(data)
+                combined_file_path = VideoCombiner.combine(self.client_socket_io, task, downloaded_file_path)
 
-                if res['res'].id is not None:
-                    requests.post("https://fykp.ru/api/update_tasks", data={
-                        'message_id': res['res'].id,
-                        'channel_id': res['res'].chat.id,
-                        'task_id': self.task['_id'],
-                        'host': self.myhost
-                    })
-                    self.sio.emit('update', {
-                        'type': 'upload_success',
-                        'task_id': self.task['_id'],
-                        'host': self.myhost
-                    })
+                if combined_file_path == False:
+                    # SEND INFO TO SERVER WITH ERROR !
+                    continue
 
-            
+                uploader = VideoUploader(combined_file_path, self.client_socket_io, self.client_pyrogram, task, int(random.choice(self.chat_ids)))
+                upload_response = uploader.upload()
+
+                if upload_response.id is not None:
+                    MasterApi.update_task(message_id=upload_response.id, channel_id=upload_response.chat.id, task_id=task['_id'], host=self.my_host_name)
+                    self.client_socket_io.emit('update', {'type': 'upload_success', 'task_id': task['_id'], 'host': self.my_host_name})
+
             except Exception as e:
                 #print(e)
                 traceback.print_exc()
-            time.sleep(1)
+                time.sleep(300)
 
-async def progress(current, total):
-    print(f"{current * 100 / total:.1f}%")
+            time.sleep(1)
+            
 
 class Uploader:
 
@@ -129,9 +92,11 @@ class Uploader:
                 p.start()
             for p in processes:
                 p.join()
-
-
-uploader = Uploader()
-uploader.run()
+            
+            time.sleep(100)
+if __name__ == '__main__':
+    freeze_support()
+    uploader = Uploader()
+    uploader.run()
 
 
