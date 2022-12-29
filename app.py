@@ -18,7 +18,7 @@ class Worker:
 
 
     def run(self, session):
-
+        session = session.split('.')[0]
         self.client_pyrogram = Client(session, self.api_id, self.api_hash)
         self.client_socket_io = socketio.Client()
         self.my_host_name = os.uname()[1]

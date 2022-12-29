@@ -13,15 +13,11 @@ class VideoCombiner:
 
             root_dir = Path().absolute()
 
-            intro_num = str(random.randint(1,9))
             video_file_path = video
-            intro_file_path = f'{root_dir}/intros/intro.mp4'
+            intro_file_path = f'{root_dir}/intro/intro.mp4'
             video_out = f'{root_dir}/files/' + str(uuid.uuid4()) + '.mp4'
             intro_out = f'{root_dir}/files/' + str(uuid.uuid4()) + '.mp4'
-
-            intro_for_audio = f'{root_dir}/intros/' + intro_num + '.mp4'
-
-            intro_audio = f'{root_dir}/files/' + str(uuid.uuid4()) + '.mp3'
+            intro_audio = f'{root_dir}/intro/' + str(random.randint(1,9)) + '.mp3'
             video_audio = f'{root_dir}/files/' + str(uuid.uuid4()) + '.mp3'
             audio_concat = f'{root_dir}/files/' + str(uuid.uuid4()) + '.mp3'
 
@@ -34,7 +30,7 @@ class VideoCombiner:
             avg_frame_rate = meta['avg_frame_rate'].split('/')[0]
             wh = ratio.split(':')
 
-            subprocess.run(f'ffmpeg -y -i {intro_file_path} -vf scale={ratio}:force_original_aspect_ratio=decrease,pad={ratio}:-1:-1:color=black -vsync 2 -video_track_timescale {tbn} {intro_out}'.split())
+            subprocess.run(f'ffmpeg -y -i {intro_file_path} -vf scale={ratio}:force_original_aspect_ratio=decrease,pad={ratio}:-1:-1:color=black -vsync 2 {intro_out}'.split())
             
             meta_one = MetaData.get(video_file_path)
             meta_two = MetaData.get(intro_out)
@@ -52,12 +48,6 @@ class VideoCombiner:
             print(TerminalColors.OKBLUE + "GET AUDIO FROM FILM" + TerminalColors.ENDC)
 
             command = f"ffmpeg -y -i {video_file_path} -q:a 0 -map a {video_audio}".split()
-            subprocess.run(command)
-            
-
-            print(TerminalColors.OKBLUE + "GET AUDIO FROM INTRO" + TerminalColors.ENDC)
-
-            command = f"ffmpeg -y -i {intro_for_audio} -q:a 0 -map a {intro_audio}".split()
             subprocess.run(command)
 
             print(TerminalColors.OKBLUE + "CONCAT AUDIOS" + TerminalColors.ENDC)
@@ -87,12 +77,10 @@ class VideoCombiner:
 
             time_end = round(time.time() - time_start)
 
-            intro_for_audio = f'{root_dir}/intros/' + intro_num + '.mp4'
-            intro_file_path = f'{root_dir}/intros/intro.mp4'
+            intro_file_path = f'{root_dir}/intro/intro.mp4'
 
             os.remove(video_out)
             os.remove(intro_out)
-            os.remove(intro_audio)
             os.remove(video_audio)
             os.remove(audio_concat)
             os.remove(video_file_path)
