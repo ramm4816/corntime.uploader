@@ -2,10 +2,12 @@
 
 
 **Installation guide:**
-```
-python3 install.py
-```
 
+Move pyrogram .session files to **corntime.uploader-main** dir and:
+
+```
+cd corntime.uploader-main && sudo python3 install.py
+```
 
 Start uploader:
 ```

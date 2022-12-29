@@ -2,10 +2,7 @@ import subprocess, time, uuid, sys, os, random, traceback
 from utils import TerminalColors, MetaData
 from pathlib import Path
 
-
 class VideoCombiner:
-
-
 
     @staticmethod
     def combine(client_socket_io, task, video):
@@ -90,11 +87,16 @@ class VideoCombiner:
 
             time_end = round(time.time() - time_start)
 
-            #os.remove(video_file_path)
-            #os.remove(video_out)
-            #os.remove(intro_out)
-            #os.remove(video_audio)
-            #os.remove(audio_concat)
+            intro_for_audio = f'{root_dir}/intros/' + intro_num + '.mp4'
+            intro_file_path = f'{root_dir}/intros/intro.mp4'
+
+            os.remove(video_out)
+            os.remove(intro_out)
+            os.remove(intro_audio)
+            os.remove(video_audio)
+            os.remove(audio_concat)
+            os.remove(video_file_path)
+            os.remove(input_file_path)
 
             print('Combine videos time: ', time_end)
 

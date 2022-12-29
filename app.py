@@ -17,9 +17,9 @@ class Worker:
         self.chat_ids = []
 
 
-    def run(self, session_num):
+    def run(self, session):
 
-        self.client_pyrogram = Client(f"s{session_num}", self.api_id, self.api_hash)
+        self.client_pyrogram = Client(session, self.api_id, self.api_hash)
         self.client_socket_io = socketio.Client()
         self.my_host_name = os.uname()[1]
 
@@ -85,9 +85,11 @@ class Uploader:
 
         while True:
             processes = []
-            for i in [10]:
+            sessions = glob.glob('*.session')
+            for session in sessions:
+                print(session)
                 worker = Worker()
-                processes.append(Process(target=worker.run, args=(i,)))
+                processes.append(Process(target=worker.run, args=(session,)))
             for p in processes:
                 p.start()
             for p in processes:
