@@ -1,4 +1,4 @@
-# corntime.uploader
+# Corntime.uploader
 
 
 **Installation guide:**
