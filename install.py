@@ -8,18 +8,18 @@ command = f'sudo pip3 install -r requirements.txt'.split()
 subprocess.run(command)
 command = f'sudo apt install ffmpeg'.split()
 subprocess.run(command)
-command = f'pip3 install "python-socketio[client]"'.split()
+command = f'pip3 install python-socketio[client]'.split()
 subprocess.run(command)
 
 current_user = getpass.getuser()
 
-service_text = '''
+service_text = f'''
 Description=Uploader service
 After=network-online.target
 
 [Service]
 User={current_user}
-ExecStart=python3 {dir}/app.py
+ExecStart=/usr/bin/python3 {dir}/app.py
 Restart=on-failure
 RestartSec=3
 LimitNOFILE=8192
