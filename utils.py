@@ -1,4 +1,4 @@
-import ffmpeg
+import ffmpeg, json
 
 class TerminalColors:
     HEADER = '\033[95m'
@@ -17,5 +17,5 @@ class MetaData:
     def get(filename):
         metadata = ffmpeg.probe(filename)["streams"]
         for _metadata in metadata:
-            if _metadata['tags']['handler_name']=="VideoHandler":
+            if _metadata['codec_type']=="video":
                 return _metadata

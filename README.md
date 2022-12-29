@@ -1,7 +1,7 @@
 # corntime.uploader
 
 
-**Install guide:**
+**Installation guide:**
 ```
 python3 install.py
 ```

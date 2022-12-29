@@ -1,4 +1,4 @@
-import os, traceback, time, os, requests, socketio, time, glob, config, random
+import os, traceback, time, os, requests, socketio, time, glob, random
 from multiprocessing import Process
 from pyrogram import Client
 from utils import TerminalColors
