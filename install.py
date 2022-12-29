@@ -6,6 +6,8 @@ dir = Path().absolute()
 
 command = f'sudo apt install python3-pip'.split()
 subprocess.run(command)
+command = f'mkdir files'.split()
+subprocess.run(command)
 command = f'sudo pip3 install -r requirements.txt'.split()
 subprocess.run(command)
 command = f'sudo apt install ffmpeg'.split()
