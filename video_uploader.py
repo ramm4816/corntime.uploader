@@ -31,8 +31,10 @@ class VideoUploader:
                 'progress': upload_progress,
                 'host': self.myhost
             })
+            
+            print(TerminalColors.WARNING + f'[{self.task["_id"]}] upload_progress: {upload_progress}' + TerminalColors.ENDC)
 
-
+            '''
             size = 50
             x = round(upload_progress / 100 * size)
 
@@ -43,7 +45,7 @@ class VideoUploader:
             
             print(TerminalColors.WARNING + "{}{}{} {}/{}".format(prefix, u'█'*x, "░"*(size-x), upload_progress, 100) + TerminalColors.ENDC, end='\r', file=sys.stdout, flush=True)
 
-            print(TerminalColors.WARNING + f'[{self.task["_id"]}] upload_progress: {upload_progress}' + TerminalColors.ENDC)
+            '''
 
     def upload(self):
 

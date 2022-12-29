@@ -33,7 +33,11 @@ class VideoDownloader:
                 'progress': download_progress,
                 'host': self.myhost
             })
-
+            
+            print(TerminalColors.WARNING + f'[{self.task["_id"]}] download_progress: {download_progress}' + TerminalColors.ENDC)
+            
+            '''
+            
             size = 50
             x = round(download_progress / width * size)
 
@@ -43,7 +47,7 @@ class VideoDownloader:
                 self.anim_bar_index = 0
             
             print(TerminalColors.WARNING + "{}{}{} {}/{}".format(prefix, u'█'*x, "░"*(size-x), download_progress, width) + TerminalColors.ENDC, end='\r', file=sys.stdout, flush=True)
-
+            '''
 
     def download(self):
 
