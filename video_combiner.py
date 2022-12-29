@@ -32,6 +32,7 @@ class VideoCombiner:
 
             subprocess.run(f'ffmpeg -y -i {intro_file_path} -vf scale={ratio}:force_original_aspect_ratio=decrease,pad={ratio}:-1:-1:color=black -vsync 2 -video_track_timescale {tbn} {intro_out}'.split())
             
+            
             meta_one = MetaData.get(video_file_path)
             meta_two = MetaData.get(intro_out)
 
