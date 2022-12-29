@@ -31,6 +31,8 @@ class Worker:
 
             try:
                 
+                time_start = time.time()
+
                 task = MasterApi.get_task()
                 self.chat_ids = task['chat_ids']
 
@@ -57,7 +59,9 @@ class Worker:
                     # SEND INFO TO SERVER WITH ERROR !
                     continue
 
-                uploader = VideoUploader(combined_file_path, self.client_socket_io, self.client_pyrogram, task, int(random.choice(self.chat_ids)))
+
+
+                uploader = VideoUploader(combined_file_path, self.client_socket_io, self.client_pyrogram, task, int(random.choice(self.chat_ids)), time_start)
                 upload_response = uploader.upload()
 
                 if upload_response.id is not None:

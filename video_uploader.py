@@ -1,9 +1,9 @@
-import os, sys
+import os, sys, time
 from utils import TerminalColors, MetaData
 
 class VideoUploader:
 
-    def __init__(self, file_path, client_socket_io, client_pyrogram, task, chat_id) -> None:
+    def __init__(self, file_path, client_socket_io, client_pyrogram, task, chat_id, time_start) -> None:
         self.file_path = file_path
         self.last_upload_progress = 0
         self.client_socket_io = client_socket_io
@@ -11,6 +11,7 @@ class VideoUploader:
         self.chat_id = chat_id
         self.client_pyrogram = client_pyrogram
         self.myhost = os.uname()[1]
+        self.time_start = time_start
         print(file_path)
         self.file_meta_data = MetaData.get(self.file_path)
 
@@ -48,13 +49,17 @@ class VideoUploader:
 
         self.last_upload_progress = 0
 
+        executed_time = round(time.time() - self.time_start)
+
+        caption = f"Film_id: {self.task['film_id']}\n\Executed time: {executed_time}\nHost: {self.myhost}"
+        
         fields = {
             'video': self.file_path,
             'chat_id': self.chat_id,
             'duration': int(float(self.file_meta_data['duration'])),
             'height': int(self.file_meta_data['coded_height']),
             'width': int(self.file_meta_data['coded_width']),
-            'caption': self.task['film_id'],
+            'caption': caption,
             'supports_streaming': 'true',
             'progress': self.upload_progress
         }

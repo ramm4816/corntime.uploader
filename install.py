@@ -20,11 +20,10 @@ After=network-online.target
 [Service]
 User={current_user}
 ExecStart=/usr/bin/python3 {dir}/app.py
+WorkingDirectory={dir}
 Restart=on-failure
 RestartSec=3
 LimitNOFILE=8192
-
-
 [Install]
 WantedBy=multi-user.target
 '''
