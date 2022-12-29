@@ -6,11 +6,9 @@
 Move pyrogram .session files to **corntime.uploader-main** dir and:
 
 ```
-
 unzip corntime.uploader-main.zip
 
 cd corntime.uploader-main && sudo python3 install.py
-
 ```
 
 Start uploader:
