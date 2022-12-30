@@ -25,13 +25,17 @@ class VideoUploader:
 
         if upload_progress - self.last_upload_progress > 1:
             self.last_upload_progress = upload_progress
-            self.client_socket_io.emit('update', {
-                'type': 'upload_progress',
-                'task_id': self.task['_id'],
-                'progress': upload_progress,
-                'host': self.myhost
-            })
             
+            try:
+                self.client_socket_io.emit('update', {
+                    'type': 'upload_progress',
+                    'task_id': self.task['_id'],
+                    'progress': upload_progress,
+                    'host': self.myhost
+                })
+            except Exception as e:
+                pass
+
             print(TerminalColors.WARNING + f'[{self.task["_id"]}] upload_progress: {upload_progress}' + TerminalColors.ENDC)
 
             '''
