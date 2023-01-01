@@ -1,6 +1,8 @@
 import wget, os, uuid, sys
 from utils import TerminalColors, MetaData
 from pathlib import Path
+from exceptions import FilmNotFound
+
 
 class VideoDownloader:
 
@@ -36,7 +38,7 @@ class VideoDownloader:
                 })
             except Exception as e:
                 pass
-            
+
             print(TerminalColors.WARNING + f'[{self.task["_id"]}] download_progress: {download_progress}' + TerminalColors.ENDC)
             
             '''
@@ -53,14 +55,17 @@ class VideoDownloader:
             '''
 
     def download(self):
+        try:
+            wget.download(self.url, self.file_path, bar=self.download_progress)
+        except Exception as e:
+            raise FilmNotFound
 
-        wget.download(self.url, self.file_path, bar=self.download_progress)
 
         meta = MetaData.get(self.file_path)
 
         if float(meta['duration']) < 1000:
             print(
                 TerminalColors.FAIL + f'[{self.task["_id"]}] duration < 1000, return false' + TerminalColors.ENDC)
-            return False
+            raise FilmNotFound
 
         return self.file_path

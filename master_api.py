@@ -18,3 +18,10 @@ class MasterApi:
             'task_id': task_id,
             'host': host
         })
+
+    @staticmethod
+    def delete_source(task_id):
+        res = requests.post("https://fykp.ru/api/delete_source", data={
+            'task_id': task_id
+        })
+        print(res)

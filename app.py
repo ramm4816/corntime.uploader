@@ -9,6 +9,9 @@ from video_downloader import VideoDownloader
 from video_combiner import VideoCombiner
 from video_uploader import VideoUploader
 
+
+from exceptions import FilmNotFound
+
 class Worker:
 
     def __init__(self):
@@ -53,7 +56,12 @@ class Worker:
 
 
                         downloader = VideoDownloader(task['url'], self.client_socket_io, task)
-                        downloaded_file_path = downloader.download()
+                        try:
+                            downloaded_file_path = downloader.download()
+                        except FilmNotFound as e:
+                            MasterApi.delete_source(task['_id'])
+                            continue
+
 
                         if downloaded_file_path == False:
                             # SEND INFO TO SERVER WITH ERROR !
@@ -77,15 +85,12 @@ class Worker:
                     except Exception as e:
                         #print(e)
                         traceback.print_exc()
-                        time.sleep(300)
+                        time.sleep(5)
 
                     time.sleep(1)
             except Exception as e:
                 print(e)
                 time.sleep(15)
-
-        
-            
 
 class Uploader:
 
@@ -111,12 +116,9 @@ class Uploader:
                 p.join()
             
 
-
-
             time.sleep(100)
+
 if __name__ == '__main__':
     freeze_support()
     uploader = Uploader()
     uploader.run()
-
-
