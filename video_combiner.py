@@ -5,7 +5,7 @@ from pathlib import Path
 class VideoCombiner:
 
     @staticmethod
-    def combine(client_socket_io, task, video):
+    def combine(task, video):
         
         try:
 

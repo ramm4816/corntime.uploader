@@ -3,10 +3,9 @@ from utils import TerminalColors, MetaData
 
 class VideoUploader:
 
-    def __init__(self, file_path, client_socket_io, client_pyrogram, task, chat_id, time_start) -> None:
+    def __init__(self, file_path, client_pyrogram, task, chat_id, time_start) -> None:
         self.file_path = file_path
         self.last_upload_progress = 0
-        self.client_socket_io = client_socket_io
         self.task = task
         self.chat_id = chat_id
         self.client_pyrogram = client_pyrogram
@@ -25,31 +24,8 @@ class VideoUploader:
 
         if upload_progress - self.last_upload_progress > 1:
             self.last_upload_progress = upload_progress
-            
-            try:
-                self.client_socket_io.emit('update', {
-                    'type': 'upload_progress',
-                    'task_id': self.task['_id'],
-                    'progress': upload_progress,
-                    'host': self.myhost
-                })
-            except Exception as e:
-                pass
 
             print(TerminalColors.WARNING + f'[{self.task["_id"]}] upload_progress: {upload_progress}' + TerminalColors.ENDC)
-
-            '''
-            size = 50
-            x = round(upload_progress / 100 * size)
-
-            prefix = f"Uploading: {self.anim_bar_symbols[self.anim_bar_index]} "
-            self.anim_bar_index += 1
-            if self.anim_bar_index > 3:
-                self.anim_bar_index = 0
-            
-            print(TerminalColors.WARNING + "{}{}{} {}/{}".format(prefix, u'█'*x, "░"*(size-x), upload_progress, 100) + TerminalColors.ENDC, end='\r', file=sys.stdout, flush=True)
-
-            '''
 
     def upload(self):
 
