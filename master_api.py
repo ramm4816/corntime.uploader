@@ -6,7 +6,7 @@ class MasterApi:
 
     @staticmethod
     def get_task():
-        res = requests.get("https://fykp.ru/api/get_task")
+        res = requests.get("https://fykp.ru/api/get_task_start")
         print(TerminalColors.OKBLUE + res.text + '\n' + TerminalColors.ENDC)
         return res.json()
 

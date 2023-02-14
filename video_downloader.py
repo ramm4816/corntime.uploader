@@ -2,7 +2,7 @@ import wget, os, uuid, sys
 from utils import TerminalColors, MetaData
 from pathlib import Path
 from exceptions import FilmNotFound
-
+import subprocess
 
 class VideoDownloader:
 
@@ -32,10 +32,15 @@ class VideoDownloader:
         
     def download(self):
 
-        try:
-            wget.download(self.url, self.file_path, bar=self.download_progress)
-        except Exception as e:
-            raise FilmNotFound
+        if self.task['resource'] in ['filmix']:
+            try:
+                wget.download(self.url, self.file_path, bar=self.download_progress)
+            except Exception as e:
+                raise FilmNotFound
+        elif self.task['resource'] in ['start']:
+            command = f"yt-dlp -N 50 -o '{self.file_path}' {self.url}".split()
+            subprocess.run(command)
+
 
 
         meta = MetaData.get(self.file_path)
