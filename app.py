@@ -103,6 +103,9 @@ class Uploader:
                 print(session)
                 worker = Worker()
                 processes.append(Process(target=worker.run, args=(session,)))
+
+            processes.append(Process(target=self.restart_service, args=()))
+
             for p in processes:
                 p.start()
             for p in processes:
