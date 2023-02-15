@@ -38,7 +38,7 @@ class VideoDownloader:
             except Exception as e:
                 raise FilmNotFound
         elif self.task['resource'] in ['start']:
-            command = f"yt-dlp -N 50 -o '{self.file_path}' {self.url}".split()
+            command = f"yt-dlp -N 50 -o {self.file_path} {self.url}".split()
             subprocess.run(command)
 
 
