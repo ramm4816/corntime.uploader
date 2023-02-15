@@ -88,7 +88,7 @@ class Uploader:
     def restart_service(self):
 
         time.sleep(10)
-        command = f"sudo service uploader restart".split()
+        command = f"sudo service uploader stop".split()
         subprocess.run(command)
         
 
