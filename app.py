@@ -11,7 +11,7 @@ from video_uploader import VideoUploader
 
 
 from exceptions import FilmNotFound
-
+import traceback
 
 class Worker:
 
@@ -48,6 +48,7 @@ class Worker:
                         try:
                             downloaded_file_path = downloader.download()
                         except FilmNotFound as e:
+                            print(traceback.format_exc())
                             MasterApi.delete_source(task['_id'])
                             continue
 
