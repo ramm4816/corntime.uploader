@@ -1,4 +1,4 @@
-import os, traceback, time, os, requests, socketio, time, glob, random
+import os, traceback, time, os, time, glob, random, subprocess
 from multiprocessing import Process
 from pyrogram import Client
 from utils import TerminalColors
@@ -11,6 +11,7 @@ from video_uploader import VideoUploader
 
 
 from exceptions import FilmNotFound
+
 
 class Worker:
 
@@ -82,6 +83,14 @@ class Uploader:
         files = glob.glob('files/*')
         for f in files:
             os.remove(f)
+
+
+    def restart_service(self):
+
+        time.sleep(10)
+        command = f"sudo service uploader restart".split()
+        subprocess.run(command)
+        
 
     def run(self):
 
