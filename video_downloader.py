@@ -45,9 +45,9 @@ class VideoDownloader:
 
         meta = MetaData.get(self.file_path)
 
-        if float(meta['duration']) < 1000:
+        if float(meta['duration']) < 120:
             print(
-                TerminalColors.FAIL + f'[{self.task["_id"]}] duration < 1000, return false' + TerminalColors.ENDC)
+                TerminalColors.FAIL + f'[{self.task["_id"]}] duration < 120, return false' + TerminalColors.ENDC)
             raise FilmNotFound
 
         return self.file_path
