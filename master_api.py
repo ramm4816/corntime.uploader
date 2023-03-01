@@ -17,13 +17,6 @@ class MasterApi:
             requests.get(f"https://api.telegram.org/bot6213721919:AAFKhp_8xVPguHsEfUkAdfars903EDzv7d0/sendMessage?chat_id=-1001865394041&text={host} restarting..")
         return True if res.text == "1" else False
 
-    #test auto pull
-    #test auto pull 111
-    #test auto pull 222
-    #test auto pull 444
-    #test auto pull 555
-    #test auto pull 666
-
 
     @staticmethod
     def update_task(task_id, channel_id, message_id, host, full_info):
