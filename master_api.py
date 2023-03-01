@@ -18,6 +18,7 @@ class MasterApi:
         return True if res.text == "1" else False
 
 
+
     @staticmethod
     def update_task(task_id, channel_id, message_id, host, full_info):
 
