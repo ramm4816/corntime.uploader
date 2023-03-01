@@ -18,6 +18,7 @@ class MasterApi:
         return True if res.text == "1" else False
 
     #test auto pull
+    #test auto pull 111
 
 
     @staticmethod
