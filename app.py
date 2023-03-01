@@ -109,6 +109,8 @@ class Uploader:
             os.remove(f)
 
     def check_restart_command(self):
+        self.my_host_name = os.uname()[1]
+
         while True:
             try:
                 time.sleep(15)
