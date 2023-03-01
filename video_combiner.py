@@ -2,6 +2,7 @@ import subprocess, time, uuid, sys, os, random, traceback
 from utils import TerminalColors, MetaData
 from pathlib import Path
 
+
 class VideoCombiner:
 
     @staticmethod
@@ -32,7 +33,6 @@ class VideoCombiner:
 
             subprocess.run(f'ffmpeg -y -i {intro_file_path} -vf scale={ratio}:force_original_aspect_ratio=decrease,pad={ratio}:-1:-1:color=black -vsync 2 -video_track_timescale {tbn} {intro_out}'.split())
             
-            
             meta_one = MetaData.get(video_file_path)
             meta_two = MetaData.get(intro_out)
 
@@ -53,7 +53,6 @@ class VideoCombiner:
 
             print(TerminalColors.OKBLUE + "CONCAT AUDIOS" + TerminalColors.ENDC)
 
-            time.sleep(2)
             command = f"ffmpeg -y -i {intro_audio} -i {video_audio} -filter_complex [0:a][1:a]concat=n=2:v=0:a=1 {audio_concat}"
             print(command)
             
@@ -91,7 +90,12 @@ class VideoCombiner:
 
             time.sleep(2)
 
-            return video_concat_audio_file_path
+
+
+            return {
+                'meta_after_combine': MetaData.get(video_concat_audio_file_path),
+                'path': video_concat_audio_file_path
+            }
 
         except Exception as e:
             traceback.print_exc()

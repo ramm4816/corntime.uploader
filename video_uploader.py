@@ -11,7 +11,6 @@ class VideoUploader:
         self.client_pyrogram = client_pyrogram
         self.myhost = os.uname()[1]
         self.time_start = time_start
-        print(file_path)
         self.file_meta_data = MetaData.get(self.file_path)
 
     def upload_progress(self, uploaded, total):

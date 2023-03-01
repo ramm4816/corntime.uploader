@@ -11,7 +11,9 @@ from video_uploader import VideoUploader
 
 
 from exceptions import FilmNotFound
-import traceback
+import traceback, json
+
+from subprocess import PIPE
 
 class Worker:
 
@@ -19,6 +21,9 @@ class Worker:
         self.api_id = 20886214
         self.api_hash = "ba51cbd8e8f1dd0fce0d755ce0970600"
         self.chat_ids = []
+        
+        result = subprocess.run('ffmpeg -version'.split(), stdout=PIPE, stderr=PIPE, universal_newlines=True)
+        self.ffmpeg_version = result.stdout
 
 
     def run(self, _session):
@@ -45,8 +50,13 @@ class Worker:
                         task = task['task']
 
                         downloader = VideoDownloader(task['url'], task)
+
                         try:
-                            downloaded_file_path = downloader.download()
+                            download_res = downloader.download()
+                            
+                            old_meta = download_res['meta_before_combine']
+                            downloaded_file_path = download_res['path']
+
                         except FilmNotFound as e:
                             print(traceback.format_exc())
                             MasterApi.delete_source(task['_id'])
@@ -56,17 +66,26 @@ class Worker:
                             # SEND INFO TO SERVER WITH ERROR !
                             continue
 
-                        combined_file_path = VideoCombiner.combine(task, downloaded_file_path)
+                        combined_res = VideoCombiner.combine(task, downloaded_file_path)
 
-                        if combined_file_path == False:
+                        if combined_res == False:
                             # SEND INFO TO SERVER WITH ERROR !
                             continue
+
+                        
+                        new_meta = combined_res['meta_after_combine']
+                        combined_file_path = combined_res['path']
 
                         uploader = VideoUploader(combined_file_path, self.client_pyrogram, task, int(random.choice(self.chat_ids)), time_start)
                         upload_response = uploader.upload()
 
                         if upload_response.id is not None:
-                            MasterApi.update_task(message_id=upload_response.id, channel_id=upload_response.chat.id, task_id=task['_id'], host=self.my_host_name)
+                            full_meta = json.dumps({
+                                'before_meta': old_meta,
+                                'after_meta': new_meta,
+                                'ffmpeg': self.ffmpeg_version
+                            })
+                            MasterApi.update_task(message_id=upload_response.id, channel_id=upload_response.chat.id, task_id=task['_id'], host=self.my_host_name, full_info=full_meta)
 
                     except Exception as e:
                         #print(e)
@@ -112,7 +131,6 @@ class Uploader:
             for p in processes:
                 p.join()
             
-
             time.sleep(100)
 
 if __name__ == '__main__':

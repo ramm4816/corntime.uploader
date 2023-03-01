@@ -6,18 +6,21 @@ class MasterApi:
 
     @staticmethod
     def get_task():
-        res = requests.get("https://fykp.ru/api/get_task?resource=start")
+        res = requests.get("https://fykp.ru/api/get_task_test?resource=start")
         print(TerminalColors.OKBLUE + res.text + '\n' + TerminalColors.ENDC)
         return res.json()
 
     @staticmethod
-    def update_task(task_id, channel_id, message_id, host):
+    def update_task(task_id, channel_id, message_id, host, full_info):
+
         res = requests.post("https://fykp.ru/api/update_tasks", data={
             'message_id': message_id,
             'channel_id': channel_id,
             'task_id': task_id,
-            'host': host
+            'host': host,
+            'info': full_info
         })
+
         print(res.text)
 
     @staticmethod

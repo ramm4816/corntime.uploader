@@ -38,10 +38,8 @@ class VideoDownloader:
             except Exception as e:
                 raise FilmNotFound
         elif self.task['resource'] in ['start']:
-            command = f"yt-dlp -N 50 -o {self.file_path} {self.url}".split()
+            command = f"yt-dlp -N 5 -o {self.file_path} {self.url}".split()
             subprocess.run(command)
-
-
 
         meta = MetaData.get(self.file_path)
 
@@ -50,4 +48,8 @@ class VideoDownloader:
                 TerminalColors.FAIL + f'[{self.task["_id"]}] duration < 120, return false' + TerminalColors.ENDC)
             raise FilmNotFound
 
-        return self.file_path
+        return {
+            'path': self.file_path,
+            'meta_before_combine': meta,
+            'duration': meta['duration']
+        }
