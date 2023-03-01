@@ -104,6 +104,17 @@ class Uploader:
         for f in files:
             os.remove(f)
 
+    def check_restart_command(self):
+        while True:
+            try:
+                time.sleep(15)
+                is_restart = MasterApi.check_restart(self.my_host_name)
+                if is_restart == True:
+                    command = f"sudo service uploader restart".split()
+                subprocess.run(command)
+            except Exception as e:
+                print(e)
+            
 
     def restart_service(self):
 
@@ -125,6 +136,7 @@ class Uploader:
                 processes.append(Process(target=worker.run, args=(session,)))
 
             processes.append(Process(target=self.restart_service, args=()))
+            processes.append(Process(target=self.check_restart_command, args=()))
 
             for p in processes:
                 p.start()

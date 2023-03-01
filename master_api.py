@@ -11,6 +11,14 @@ class MasterApi:
         return res.json()
 
     @staticmethod
+    def check_restart(host):
+        res = requests.get("https://fykp.ru/api/check_restart")
+        if res.text == "1":
+            requests.get(f"https://api.telegram.org/bot6213721919:AAFKhp_8xVPguHsEfUkAdfars903EDzv7d0/sendMessage?chat_id=-1001865394041&text={host} restarting..")
+        return True if res.text == "1" else False
+
+
+    @staticmethod
     def update_task(task_id, channel_id, message_id, host, full_info):
 
         res = requests.post("https://fykp.ru/api/update_tasks", data={
