@@ -25,10 +25,6 @@ class Worker:
         result = subprocess.run('ffmpeg -version'.split(), stdout=PIPE, stderr=PIPE, universal_newlines=True)
         self.ffmpeg_version = result.stdout
 
-        with open('/home/dev/corntime.uploader/current.version', 'r') as f:
-            ver = f.read()
-            requests.get(f"https://api.telegram.org/bot6213721919:AAFKhp_8xVPguHsEfUkAdfars903EDzv7d0/sendMessage?chat_id=-1001865394041&text={host} started, version {ver}")
-
 
     def run(self, _session):
 
@@ -110,6 +106,12 @@ class Uploader:
 
     def check_restart_command(self):
         self.my_host_name = os.uname()[1]
+
+        with open('/home/dev/corntime.uploader/current.version', 'r') as f:
+            ver = f.read()
+            requests.get(f"https://api.telegram.org/bot6213721919:AAFKhp_8xVPguHsEfUkAdfars903EDzv7d0/sendMessage?chat_id=-1001865394041&text={self.my_host_name} started, version {ver}")
+
+
 
         while True:
             try:
