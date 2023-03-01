@@ -17,7 +17,7 @@ class MasterApi:
             requests.get(f"https://api.telegram.org/bot6213721919:AAFKhp_8xVPguHsEfUkAdfars903EDzv7d0/sendMessage?chat_id=-1001865394041&text={host} restarting..")
         return True if res.text == "1" else False
 
-
+    #test auto pull
 
 
     @staticmethod
