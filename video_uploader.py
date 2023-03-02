@@ -48,6 +48,9 @@ class VideoUploader:
         with self.client_pyrogram:
             res = self.client_pyrogram.send_video(**fields)
 
-        os.remove(self.file_path)
+        #os.remove(self.file_path)
+
+
+
 
         return res

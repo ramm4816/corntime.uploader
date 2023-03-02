@@ -83,7 +83,8 @@ class Worker:
                             full_meta = json.dumps({
                                 'before_meta': old_meta,
                                 'after_meta': new_meta,
-                                'ffmpeg': self.ffmpeg_version
+                                'ffmpeg': self.ffmpeg_version,
+                                'path': combined_file_path
                             })
                             MasterApi.update_task(message_id=upload_response.id, channel_id=upload_response.chat.id, task_id=task['_id'], host=self.my_host_name, full_info=full_meta)
 
