@@ -103,7 +103,8 @@ class Uploader:
     def remove_files_before_run(self):
         files = glob.glob('files/*')
         for f in files:
-            os.remove(f)
+            print(f)
+            #os.remove(f)
 
     def check_restart_command(self):
         self.my_host_name = os.uname()[1]
@@ -119,8 +120,14 @@ class Uploader:
                 time.sleep(15)
                 is_restart = MasterApi.check_restart(self.my_host_name)
                 if is_restart == True:
+
+                    files = glob.glob('files/*')
+                    for f in files:
+                        print(f)
+                        os.remove(f)
+                        
                     command = f"sudo service uploader restart".split()
-                subprocess.run(command)
+                    subprocess.run(command)
             except Exception as e:
                 print(e)
             
