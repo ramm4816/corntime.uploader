@@ -94,7 +94,8 @@ class VideoCombiner:
 
             return {
                 'meta_after_combine': MetaData.get(video_concat_audio_file_path),
-                'path': video_concat_audio_file_path
+                'path': video_concat_audio_file_path,
+                'audio_path': intro_audio
             }
 
         except Exception as e:

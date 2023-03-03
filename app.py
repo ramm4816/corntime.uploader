@@ -76,6 +76,7 @@ class Worker:
                         
                         new_meta = combined_res['meta_after_combine']
                         combined_file_path = combined_res['path']
+                        combined_audio_path = combined_res['audio_path']
 
                         uploader = VideoUploader(combined_file_path, self.client_pyrogram, task, int(random.choice(self.chat_ids)), time_start)
                         upload_response = uploader.upload()
@@ -85,7 +86,8 @@ class Worker:
                                 'before_meta': old_meta,
                                 'after_meta': new_meta,
                                 'ffmpeg': self.ffmpeg_version,
-                                'path': combined_file_path
+                                'path': combined_file_path,
+                                'audio_path': combined_audio_path
                             })
                             MasterApi.update_task(message_id=upload_response.id, channel_id=upload_response.chat.id, task_id=task['_id'], host=self.my_host_name, full_info=full_meta)
 
