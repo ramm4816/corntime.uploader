@@ -21,7 +21,8 @@ class Worker:
         self.api_id = 20886214
         self.api_hash = "ba51cbd8e8f1dd0fce0d755ce0970600"
         self.chat_ids = []
-        
+        self.my_host_name = os.uname()[1]
+
         result = subprocess.run('ffmpeg -version'.split(), stdout=PIPE, stderr=PIPE, universal_newlines=True)
         self.ffmpeg_version = result.stdout
 
@@ -44,7 +45,7 @@ class Worker:
                         
                         time_start = time.time()
 
-                        task = MasterApi.get_task()
+                        task = MasterApi.get_task(self.my_host_name)
                         self.chat_ids = task['chat_ids']
 
                         task = task['task']
@@ -125,7 +126,7 @@ class Uploader:
                     for f in files:
                         print(f)
                         os.remove(f)
-                        
+
                     command = f"sudo service uploader restart".split()
                     subprocess.run(command)
             except Exception as e:
