@@ -18,7 +18,7 @@ class VideoCombiner:
             intro_file_path = f'{root_dir}/intro/intro.mp4'
             video_out = f'{root_dir}/files/' + str(uuid.uuid4()) + '.mp4'
             intro_out = f'{root_dir}/files/' + str(uuid.uuid4()) + '.mp4'
-            intro_audio = f'{root_dir}/intro/' + 9 + '.mp3'
+            intro_audio = f'{root_dir}/intro/'  + '9.mp3'
             video_audio = f'{root_dir}/files/' + str(uuid.uuid4()) + '.mp3'
             audio_concat = f'{root_dir}/files/' + str(uuid.uuid4()) + '.mp3'
 
