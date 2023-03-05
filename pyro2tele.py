@@ -20,15 +20,18 @@ for file_session in sessions:
         pyro_cursor = sqlite_connection_pyro.cursor()
         tele_cursor = sqlite_connection_tele.cursor()
 
+        keys = []
+
         for row in pyro_cursor.execute("pragma table_info('sessions')").fetchall():
-            print(row)
+            keys.append(row[1])
+        
+        print(keys)
 
 
         sqlite_select_query = """SELECT * from sessions"""
         pyro_cursor.execute(sqlite_select_query)
         session = pyro_cursor.fetchone()
         session_dict = {}
-        keys = ["dc_id", "api_id", "test_mode", "auth_key", "date", "user_id", "is_bot"]
         for index, value in enumerate(session):
             session_dict[keys[index]] = value
         pyro_cursor.close()
