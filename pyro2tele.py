@@ -20,7 +20,7 @@ for file_session in sessions:
         pyro_cursor = sqlite_connection_pyro.cursor()
         tele_cursor = sqlite_connection_tele.cursor()
 
-        for row in pyro_cursor.execute("pragma table_info('sqlite_master')").fetchall():
+        for row in pyro_cursor.execute("pragma table_info('sessions')").fetchall():
             print(row)
 
 
