@@ -20,6 +20,10 @@ for file_session in sessions:
         pyro_cursor = sqlite_connection_pyro.cursor()
         tele_cursor = sqlite_connection_tele.cursor()
 
+        for row in pyro_cursor.execute("pragma table_info('sqlite_master')").fetchall():
+            print(print)
+
+
         sqlite_select_query = """SELECT * from sessions"""
         pyro_cursor.execute(sqlite_select_query)
         session = pyro_cursor.fetchone()
