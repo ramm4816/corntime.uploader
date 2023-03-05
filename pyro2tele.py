@@ -116,9 +116,14 @@ for file_session in sessions:
 
     from telethon.sync import TelegramClient, events
 
-    print(file_session_telethon)
-    with TelegramClient(file_session_telethon.replace('.session',''), 20886214, "ba51cbd8e8f1dd0fce0d755ce0970600") as client:
+    try:
+        print(file_session_telethon)
+        with TelegramClient(file_session_telethon.replace('.session',''), 20886214, "ba51cbd8e8f1dd0fce0d755ce0970600") as client:
 
-        me = client.get_me()
-        print(me)
+            me = client.get_me()
+            print(me)
 
+    except Exception as e:
+        os.remove(file_session_telethon)
+        print('BAD SESSION: ', file_session_telethon)
+    
