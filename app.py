@@ -1,6 +1,5 @@
 import os, traceback, time, os, time, glob, random, subprocess
 from multiprocessing import Process
-from pyrogram import Client
 from utils import TerminalColors
 from master_api import MasterApi
 from multiprocessing import freeze_support
@@ -15,41 +14,40 @@ import traceback, json, requests
 
 from subprocess import PIPE
 
+
+
 class Worker:
 
     def __init__(self):
-        self.api_id = 20886214
-        self.api_hash = "ba51cbd8e8f1dd0fce0d755ce0970600"
         self.chat_ids = []
         self.my_host_name = os.uname()[1]
+
 
         result = subprocess.run('ffmpeg -version'.split(), stdout=PIPE, stderr=PIPE, universal_newlines=True)
         self.ffmpeg_version = result.stdout
 
 
     def run(self, _session):
-
+        print(_session)
         while True:
 
             try:
 
-                session = _session.split('.')[0]
-
-                self.client_pyrogram = Client(session, self.api_id, self.api_hash)
-                self.my_host_name = os.uname()[1]
-
+                self.session = _session.split('.')[0]
 
                 while True:
 
                     try:
                         
                         time_start = time.time()
+                        print(time_start)
 
                         task = MasterApi.get_task(self.my_host_name)
                         self.chat_ids = task['chat_ids']
 
                         task = task['task']
-
+                        print(task)
+                        
                         downloader = VideoDownloader(task['url'], task)
 
                         try:
@@ -78,10 +76,10 @@ class Worker:
                         combined_file_path = combined_res['path']
                         combined_audio_path = combined_res['audio_path']
 
-                        uploader = VideoUploader(combined_file_path, self.client_pyrogram, task, int(random.choice(self.chat_ids)), time_start)
+                        uploader = VideoUploader(combined_file_path, self.session, task, int(random.choice(self.chat_ids)), time_start)
                         upload_response = uploader.upload()
 
-                        if upload_response.id is not None:
+                        if upload_response['id'] is not None:
                             full_meta = json.dumps({
                                 'before_meta': old_meta,
                                 'after_meta': new_meta,
@@ -89,7 +87,7 @@ class Worker:
                                 'path': combined_file_path,
                                 'audio_path': combined_audio_path
                             })
-                            MasterApi.update_task(message_id=upload_response.id, channel_id=upload_response.chat.id, task_id=task['_id'], host=self.my_host_name, full_info=full_meta)
+                            MasterApi.update_task(message_id=upload_response['id'], channel_id=upload_response['channel_id'], task_id=task['_id'], host=self.my_host_name, full_info=full_meta)
 
                     except Exception as e:
                         #print(e)
@@ -103,6 +101,11 @@ class Worker:
 
 class Uploader:
 
+    def __init__(self):
+        
+        self.uploader = 'telethon'
+        # pyrogram or telethon
+
     def remove_files_before_run(self):
         files = glob.glob('files/*')
         for f in files:
@@ -110,12 +113,16 @@ class Uploader:
             #os.remove(f)
 
     def check_restart_command(self):
-        self.my_host_name = os.uname()[1]
+        try:
+            self.my_host_name = os.uname()[1]
 
-        with open('/home/dev/corntime.uploader/current.version', 'r') as f:
-            ver = f.read()
-            requests.get(f"https://api.telegram.org/bot6213721919:AAFKhp_8xVPguHsEfUkAdfars903EDzv7d0/sendMessage?chat_id=-1001865394041&text={self.my_host_name} started, version {ver}")
+            with open('/home/dev/corntime.uploader/current.version', 'r') as f:
+                ver = f.read()
+                requests.get(f"https://api.telegram.org/bot6213721919:AAFKhp_8xVPguHsEfUkAdfars903EDzv7d0/sendMessage?chat_id=-1001865394041&text={self.my_host_name} started, version {ver}")
 
+
+        except Exception as e:
+            print(e)
 
 
         while True:
@@ -147,12 +154,21 @@ class Uploader:
         self.remove_files_before_run()
 
         while True:
+
             processes = []
             sessions = glob.glob('*.session')
             for session in sessions:
-                print(session)
-                worker = Worker()
-                processes.append(Process(target=worker.run, args=(session,)))
+                if self.uploader == 'telethon':
+                    if 'telethon' in session:
+                        print(f'{self.uploader}', session)
+                        worker = Worker()
+                        processes.append(Process(target=worker.run, args=(session,)))
+                else:
+                    if 'telethon' not in session:
+                        print(f'{self.uploader}', session)
+                        worker = Worker()
+                        processes.append(Process(target=worker.run, args=(session,)))
+
 
             processes.append(Process(target=self.restart_service, args=()))
             processes.append(Process(target=self.check_restart_command, args=()))

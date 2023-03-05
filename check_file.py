@@ -15,11 +15,11 @@ api_hash = "ba51cbd8e8f1dd0fce0d755ce0970600"
 async def main():
     async with Client(session, api_id, api_hash) as app:
 
-        messages = await app.get_messages(-1001843244645, [39861])
+        messages = await app.get_messages(-1001365260888, [40143])
 
         message = messages[0]
         f = open('checker.mp4','wb')
-        async for chunk in app.stream_media(message, limit=15):
+        async for chunk in app.stream_media(message):
             f.write(chunk)
             print(len(chunk))
 
