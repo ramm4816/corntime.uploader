@@ -24,9 +24,6 @@ for file_session in sessions:
 
         for row in pyro_cursor.execute("pragma table_info('sessions')").fetchall():
             keys.append(row[1])
-        
-        print(keys)
-
 
         sqlite_select_query = """SELECT * from sessions"""
         pyro_cursor.execute(sqlite_select_query)
@@ -34,9 +31,9 @@ for file_session in sessions:
         session_dict = {}
         for index, value in enumerate(session):
             session_dict[keys[index]] = value
+            print(keys[index],': ', value)
         pyro_cursor.close()
 
-        print(session_dict)
 
         #create telethon tables
         print('create table sessions')
@@ -92,8 +89,7 @@ for file_session in sessions:
         sqlite_connection_tele.commit()
                 
         print('tables created success')
-        print('')
-        print('')
+        
         sqlite_insert_query = f"""INSERT INTO sessions  (dc_id, server_adress, port, auth_key, takeout_id)  VALUES  ({session_dict['dc_id']}, "{tele_server_adress}", {tele_port}, ?, null)"""
 
         tele_cursor.execute(sqlite_insert_query, (memoryview(session_dict['auth_key']),))
