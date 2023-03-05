@@ -2,6 +2,10 @@ import sqlite3, os, glob
 
 sessions = glob.glob('*.session')
 for file_session in sessions:
+
+    if '_telethon' in file_session:
+        continue
+    
     file_session_telethon = file_session.replace('.session','_telethon.session')
 
     try:
