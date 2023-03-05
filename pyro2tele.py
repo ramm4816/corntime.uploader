@@ -1,11 +1,12 @@
 import sqlite3, os, glob
+from telethon.sync import TelegramClient, events
 
 sessions = glob.glob('*.session')
 for file_session in sessions:
 
     if '_telethon' in file_session:
         continue
-    
+
     file_session_telethon = file_session.replace('.session','_telethon.session')
 
     try:
@@ -118,16 +119,16 @@ for file_session in sessions:
             print("sqlite connect sqlite_connection_tele closed")
 
 
-    from telethon.sync import TelegramClient, events
 
     try:
         print(file_session_telethon)
-        with TelegramClient(file_session_telethon.replace('.session',''), 20886214, "ba51cbd8e8f1dd0fce0d755ce0970600") as client:
 
+        with TelegramClient(file_session_telethon.replace('.session',''), 20886214, "ba51cbd8e8f1dd0fce0d755ce0970600") as client:
             me = client.get_me()
             print(me)
 
     except Exception as e:
+        os.remove(file_session)
         os.remove(file_session_telethon)
         print('BAD SESSION: ', file_session_telethon)
     
