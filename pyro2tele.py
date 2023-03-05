@@ -21,7 +21,7 @@ for file_session in sessions:
         tele_cursor = sqlite_connection_tele.cursor()
 
         for row in pyro_cursor.execute("pragma table_info('sqlite_master')").fetchall():
-            print(print)
+            print(row)
 
 
         sqlite_select_query = """SELECT * from sessions"""
