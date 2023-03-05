@@ -43,6 +43,11 @@ class Worker:
                         print(time_start)
 
                         task = MasterApi.get_task(self.my_host_name)
+                        
+                        if task['ok'] == False:
+                            time.sleep(1)
+                            continue
+
                         self.chat_ids = task['chat_ids']
 
                         task = task['task']
