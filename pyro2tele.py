@@ -29,6 +29,8 @@ for file_session in sessions:
             session_dict[keys[index]] = value
         pyro_cursor.close()
 
+        print(session_dict)
+
         #create telethon tables
         print('create table sessions')
 
